@@ -13,7 +13,8 @@
     "watch": "webpack -w",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore ."
   },
-  "author": "",
+  "author": "Alexander Keith <akjjak18@gmail.com> (https://github.com/akjjak)",
+  "repository": "open-tag-manager/web-collector",
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/js-cookie": "^2.2.6",
