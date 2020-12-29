@@ -29,7 +29,7 @@ And put `dist-web/web-collector.js` to your web server.
 ### CommonJS
 
 ```
-npm install web-collector
+npm install @open-tag-manager/web-collector
 ```
 
 ```

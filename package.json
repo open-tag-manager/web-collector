@@ -1,5 +1,5 @@
 {
-  "name": "web-collector",
+  "name": "@open-tag-manager/web-collector",
   "version": "0.1.0",
   "description": "",
   "main": "dist-cjs/index.js",
