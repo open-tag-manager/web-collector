@@ -41,5 +41,9 @@
     "js-cookie": "^2.2.1",
     "qs": "^6.9.4",
     "uuid": "^8.3.2"
-  }
+  },
+  "files": [
+    "dist-cjs",
+    "dist-esm"
+  ]
 }
