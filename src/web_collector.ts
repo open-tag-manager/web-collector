@@ -1,6 +1,6 @@
 import { v4 as uuidV4 } from 'uuid'
 import Cookies from 'js-cookie'
-import { Payload, PageViewPayload, EventPayload } from './payload'
+import { Payload, PageViewPayload, EventPayload, TimingPayload } from './payload'
 
 export class WebCollector {
   endpoint: string = 'https://www.google-analytics.com/collect'
@@ -41,31 +41,41 @@ export class WebCollector {
     }
   }
 
-  pageview (): void {
+  pageview (params: {[key: string]: string} = {}): boolean {
     const p = new PageViewPayload(this.trackingId, {
       ...this.pvContextParams(),
-      cid: this.clientId || ''
+      cid: this.clientId || '',
+      ...params
     })
-    this.send(p)
+    return this.send(p)
   }
 
-  event (eventCategory: string, eventAction: string, eventLabel?: string): void {
-    const params: {[key: string]: string} = {
+  event (eventCategory: string, eventAction: string, eventLabel?: string, params: {[key: string]: string} = {}): boolean {
+    const sendParams: {[key: string]: string} = {
       ...this.pvContextParams(),
-      cid: this.clientId || ''
+      cid: this.clientId || '',
+      ...params
     }
     if (eventLabel) {
-      params.el = eventLabel
+      sendParams.el = eventLabel
     }
-    this.send(new EventPayload(this.trackingId, eventCategory, eventAction, params))
+    return this.send(new EventPayload(this.trackingId, eventCategory, eventAction, sendParams))
   }
 
-  send (payload: Payload): void {
+  timing (userTimingCategory: string, userTimingVariableName: string, userTimingTime: number, params: {[key: string]: string} = {}): boolean {
+    const p = new TimingPayload(this.trackingId, userTimingCategory, userTimingVariableName, userTimingTime, {
+      cid: this.clientId || '',
+      ...params
+    })
+    return this.send(p)
+  }
+
+  send (payload: Payload): boolean {
     if (this.useBeacon) {
       if (this.useQueryString) {
-        navigator.sendBeacon(`${this.endpoint}?${payload.toQuery()}`)
+        return navigator.sendBeacon(`${this.endpoint}?${payload.toQuery()}`)
       } else {
-        navigator.sendBeacon(`${this.endpoint}`, payload.toFormData())
+        return navigator.sendBeacon(`${this.endpoint}`, payload.toFormData())
       }
     } else {
       if (this.useQueryString) {
@@ -75,6 +85,7 @@ export class WebCollector {
           mode: 'no-cors',
           keepalive: true
         })
+        return true
       } else {
         fetch(`${this.endpoint}`, {
           method: 'POST',
@@ -86,6 +97,7 @@ export class WebCollector {
           mode: 'no-cors',
           keepalive: true
         })
+        return true
       }
     }
   }
